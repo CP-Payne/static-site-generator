@@ -1,5 +1,9 @@
 from textnode import TextNode
+from htmlnode import HTMLNode
 
-textnode = TextNode("This is a text node", "bold", "https://www.boot.dev")
+p = HTMLNode(tag="p", value="some paragraph text")
+htmlnode = HTMLNode(tag="a", value="testing value", children=[p], props={"href": "http://google.com"})
+node = HTMLNode()
 
-print(textnode)
+print(p)
+
