@@ -1,7 +1,5 @@
 from textnode import TextNode
-from htmlnode import HTMLNode
-from leafnode import LeafNode, text_node_to_html_node
-from parentnode import ParentNode
+from htmlnode import HTMLNode,ParentNode, LeafNode, text_node_to_html_node
 
 p = HTMLNode(tag="p", value="some paragraph text")
 htmlnode = HTMLNode(tag="a", value="testing value", children=[p], props={"href": "http://google.com"})
