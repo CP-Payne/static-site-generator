@@ -1,4 +1,4 @@
-from block_markdown import markdown_to_blocks
+from block_markdown import  *
 import unittest
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -54,6 +54,34 @@ class TestMarkdownToBlocks(unittest.TestCase):
         ]
         result = markdown_to_blocks(markdown)
         self.assertEqual(result, expected)
+
+        def test_heading(self):
+            self.assertEqual(block_to_block_type("# Heading"), block_type_heading)
+
+    def test_code_block(self):
+        code_block = "```\nprint('Hello, World!')\n```"
+        self.assertEqual(block_to_block_type(code_block), block_type_code)
+
+    def test_quote(self):
+        quote_block = "> This is a quote\n> This is the second line of the quote"
+        self.assertEqual(block_to_block_type(quote_block), block_type_quote)
+
+    def test_unordered_list(self):
+        ul_block = "* Item 1\n* Item 2"
+        self.assertEqual(block_to_block_type(ul_block), block_type_unordered_list)
+
+    def test_ordered_list(self):
+        ol_block = "1. Item 1\n2. Item 2"
+        self.assertEqual(block_to_block_type(ol_block), block_type_ordered_list)
+
+    def test_paragraph(self):
+        paragraph = "This is a simple paragraph."
+        self.assertEqual(block_to_block_type(paragraph), block_type_paragraph)
+
+    def test_mixed_content(self):
+        mixed_content = "This is a paragraph with a list:\n- Item 1\n- Item 2"
+        # This should ideally be recognized as a paragraph due to mixed content
+        self.assertEqual(block_to_block_type(mixed_content), block_type_paragraph)
 
 if __name__ == "__main__":
     unittest.main()
