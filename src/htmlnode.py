@@ -1,3 +1,5 @@
+from block_markdown import *
+
 class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
@@ -90,3 +92,52 @@ class ParentNode(HTMLNode):
             html += child.to_html()
         html += close_tag
         return html
+
+def block_to_html_node(block, block_type):
+    if block_type == block_type_paragraph:
+        return LeafNode(tag="p", value=block)
+    elif block_type == block_type_heading:
+        level = block.count('#')
+        return LeafNode(tag=f"h{level}", value=block.strip('# ').strip())
+    elif block_type == block_type_code:
+        # Assuming the block includes the triple backticks
+        content = '\n'.join(block.split('\n')[1:-1])
+        return ParentNode(tag="pre", children=[LeafNode(tag="code", value=content)])
+    elif block_type == block_type_quote:
+        return ParentNode(tag="blockquote", children=[LeafNode(tag="p", value=block.strip('> ').strip())])
+    elif block_type == block_type_unordered_list:
+        items = [LeafNode(tag="li", value=item.strip('* ').strip()) for item in block.split('\n')]
+        return ParentNode(tag="ul", children=items)
+    elif block_type == block_type_ordered_list:
+        items = [LeafNode(tag="li", value=item.split('. ')[1]) for item in block.split('\n')]
+        return ParentNode(tag="ol", children=items)
+    else:
+        return LeafNode(tag="div", value=block)  # Fallback for any unhandled types
+
+# Utilizes markdown_to_blocks and block_to_block_type and block_to_html_node to build complete HTML structure
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    block_nodes = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        html_node = block_to_html_node(block, block_type)
+        block_nodes.append(html_node)
+
+    return ParentNode(tag="div", children=block_nodes)
+
+# if __name__ == "__main__":
+#     markdown = """
+# # Heading One
+#
+# This is a paragraph with **bold** text.
+#
+# * List Item 1
+# * List Item 2
+#
+# > This is a quote
+#
+# 1. Ordered Item 1
+# 2. Ordered Item 2
+# """
+# html_node = markdown_to_html_node(markdown)
+# print(html_node.to_html())
