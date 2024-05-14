@@ -1,27 +1,44 @@
-from textnode import TextNode
-from htmlnode import HTMLNode,ParentNode, LeafNode, text_node_to_html_node
+from htmlnode import *
+import os
+import shutil
+import logging
 
-p = HTMLNode(tag="p", value="some paragraph text")
-htmlnode = HTMLNode(tag="a", value="testing value", children=[p], props={"href": "http://google.com"})
-node = HTMLNode()
-leaf =  LeafNode(value="This is a paragraph", tag="p", props={"class": "bolder"})
-leaf_link = LeafNode(tag="a", value="Click me!", props={"href": "http://google.com"})
 
-node = ParentNode(
-    "p",
-    [
-        LeafNode("b", "Bold text"),
-        LeafNode(None, "Normal text"),
-        LeafNode("i", "italic text"),
-        LeafNode(None, "Normal text"),
-    ],
-)
-textnode = TextNode("This is a paragraph", "image", url="http://google.com")
-text_to_leaf = text_node_to_html_node(textnode)
-# print(node.children)
-node = TextNode("Sample Text", "text")
-expected = LeafNode(tag=None, value="Sample Text")
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-print(expected)
-print(text_node_to_html_node(node))
+def recursive_copy(src, dst):
+    """
+    Recursively copies all files and directories from src to dst.
+    """
+    # Check if the destination directory exists, if not, create it
+    if not os.path.exists(dst):
+        os.mkdir(dst)
+        logging.info(f"Directory created: {dst}")
 
+    for item in os.listdir(src):
+        src_item = os.path.join(src, item)
+        dst_item = os.path.join(dst, item)
+
+        # Check if the item is a directory, then recurse
+        if os.path.isdir(src_item):
+            recursive_copy(src_item, dst_item)
+        else:
+            shutil.copy(src_item, dst_item)
+            logging.info(f"Copied {src_item} to {dst_item}")
+
+
+def main():
+    src_directory = "../static"
+    dst_directory = "../public"
+
+    # Ensure the destination directory is empty before copying
+    if os.path.exists(dst_directory):
+        shutil.rmtree(dst_directory)
+        logging.info(f"Cleaned existing directory: {dst_directory}")
+
+    # Copy contents from src to dst
+    recursive_copy(src_directory, dst_directory)
+    logging.info("All contents copied successfully.")
+
+if __name__ == "__main__":
+    main()
