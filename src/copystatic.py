@@ -28,7 +28,7 @@ def recursive_copy(src, dst):
 
 
 
-def copy_static(src="../static", dst="../public"):
+def copy_static(src="static", dst="public"):
     src_directory = src
     dst_directory = dst
 

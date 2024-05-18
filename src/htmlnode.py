@@ -104,9 +104,11 @@ def block_to_html_node(block, block_type):
         content = '\n'.join(block.split('\n')[1:-1])
         return ParentNode(tag="pre", children=[LeafNode(tag="code", value=content)])
     elif block_type == block_type_quote:
-        return ParentNode(tag="blockquote", children=[LeafNode(tag="p", value=block.strip('> ').strip())])
+        items = [LeafNode(tag="p", value=item.strip('> ').strip()) for item in block.split('\n')]
+        # return ParentNode(tag="blockquote", children=[LeafNode(tag="p", value=block.strip('> ').strip())])
+        return ParentNode(tag="blockquote", children=items)
     elif block_type == block_type_unordered_list:
-        items = [LeafNode(tag="li", value=item.strip('* ').strip()) for item in block.split('\n')]
+        items = [LeafNode(tag="li", value=item.strip('* ').strip("- ").strip()) for item in block.split('\n')]
         return ParentNode(tag="ul", children=items)
     elif block_type == block_type_ordered_list:
         items = [LeafNode(tag="li", value=item.split('. ')[1]) for item in block.split('\n')]

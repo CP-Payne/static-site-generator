@@ -8,6 +8,7 @@ from textnode import (
     text_type_image,
     text_type_link
 )
+from htmlnode import *
 
 def text_to_textnodes(text):
     nodes = [TextNode(text, text_type=text_type_text)]
@@ -114,4 +115,6 @@ if __name__ == "__main__":
 
     text = "This is **text** with an *italic* word and a `code block` and an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev)"
     new_nodes = text_to_textnodes(text)
-    print(new_nodes)
+    html_nodes = [text_node_to_html_node(node).to_html() for node in new_nodes]
+
+    print("".join(html_nodes))
